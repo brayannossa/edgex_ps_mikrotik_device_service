@@ -3,13 +3,13 @@
 GO=CGO_ENABLED=0 GO111MODULE=on go
 GOCGO=CGO_ENABLED=1 GO111MODULE=on go
 
-MICROSERVICES=cmd/device-simple/device-simple
+MICROSERVICES=cmd/device-mikrotik/device-mikrotik
 .PHONY: $(MICROSERVICES)
 
 VERSION=$(shell cat ./VERSION 2>/dev/null || echo 0.0.0)
 DOCKER_TAG=$(VERSION)-dev
 
-GOFLAGS=-ldflags "-X github.com/edgexfoundry/device-simple.Version=$(VERSION)"
+GOFLAGS=-ldflags "-X github.com/edgexfoundry/device-mikrotik.Version=$(VERSION)"
 GOTESTFLAGS?=-race
 
 GIT_SHA=$(shell git rev-parse HEAD)
@@ -17,16 +17,16 @@ GIT_SHA=$(shell git rev-parse HEAD)
 build: $(MICROSERVICES)
 	$(GOCGO) install -tags=safe
 
-cmd/device-simple/device-simple:
+cmd/device-mikrotik/device-mikrotik:
 	go mod tidy
-	$(GOCGO) build $(GOFLAGS) -o $@ ./cmd/device-simple
+	$(GOCGO) build $(GOFLAGS) -o $@ ./cmd/device-mikrotik
 
 docker:
 	docker build \
-		-f example/cmd/device-simple/Dockerfile \
+		-f example/cmd/device-mikrotik/Dockerfile \
 		--label "git_sha=$(GIT_SHA)" \
-		-t edgexfoundry/device-simple:$(GIT_SHA) \
-		-t edgexfoundry/device-simple:$(DOCKER_TAG) \
+		-t edgexfoundry/device-mikrotik:$(GIT_SHA) \
+		-t edgexfoundry/device-mikrotik:$(DOCKER_TAG) \
 		.
 
 test:

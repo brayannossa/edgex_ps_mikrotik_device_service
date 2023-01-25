@@ -63,11 +63,11 @@ PublishTopicPrefix = 'edgex/events/device' # /<device-profile-name>/<device-name
 Type = 'vault'
 Host = 'localhost'
 Port = 8200
-Path = 'device-simple/'
+Path = 'device-mikrotik/'
 Protocol = 'http'
 RootCaCertPath = ''
 ServerName = ''
-TokenFile = '/tmp/edgex/secrets/device-simple/secrets-token.json'
+TokenFile = '/tmp/edgex/secrets/device-mikrotik/secrets-token.json'
   [SecretStore.Authentication]
   AuthType = 'X-Vault-Token'
 

@@ -9,9 +9,9 @@
 package main
 
 import (
+	"github.com/edgexfoundry/device-mikrotik"
+	"github.com/edgexfoundry/device-mikrotik/driver"
 	"github.com/edgexfoundry/device-sdk-go/v2/pkg/startup"
-	"github.com/edgexfoundry/device-simple"
-	"github.com/edgexfoundry/device-simple/driver"
 )
 
 const (

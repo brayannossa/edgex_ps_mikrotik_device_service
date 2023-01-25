@@ -7,7 +7,6 @@
 
 // This package provides a simple example implementation of
 // ProtocolDriver interface.
-//
 package driver
 
 import (
@@ -133,51 +132,34 @@ func (s *SimpleDriver) ProcessCustomConfigChanges(rawWritableConfig interface{})
 // HandleReadCommands triggers a protocol Read operation for the specified device.
 func (s *SimpleDriver) HandleReadCommands(deviceName string, protocols map[string]models.ProtocolProperties, reqs []sdkModels.CommandRequest) (res []*sdkModels.CommandValue, err error) {
 	s.lc.Debugf("SimpleDriver.HandleReadCommands: protocols: %v resource: %v attributes: %v", protocols, reqs[0].DeviceResourceName, reqs[0].Attributes)
-
-	if len(reqs) == 1 {
-		res = make([]*sdkModels.CommandValue, 1)
-		if reqs[0].DeviceResourceName == "SwitchButton" {
-			cv, _ := sdkModels.NewCommandValue(reqs[0].DeviceResourceName, common.ValueTypeBool, s.switchButton)
-			res[0] = cv
-		} else if reqs[0].DeviceResourceName == "Xrotation" {
-			cv, _ := sdkModels.NewCommandValue(reqs[0].DeviceResourceName, common.ValueTypeInt32, s.xRotation)
-			res[0] = cv
-		} else if reqs[0].DeviceResourceName == "Yrotation" {
-			cv, _ := sdkModels.NewCommandValue(reqs[0].DeviceResourceName, common.ValueTypeInt32, s.yRotation)
-			res[0] = cv
-		} else if reqs[0].DeviceResourceName == "Zrotation" {
-			cv, _ := sdkModels.NewCommandValue(reqs[0].DeviceResourceName, common.ValueTypeInt32, s.zRotation)
-			res[0] = cv
-		} else if reqs[0].DeviceResourceName == "Image" {
-			// Show a binary/image representation of the switch's on/off value
-			buf := new(bytes.Buffer)
-			if s.switchButton == true {
-				err = getImageBytes(s.serviceConfig.SimpleCustom.OnImageLocation, buf)
-			} else {
-				err = getImageBytes(s.serviceConfig.SimpleCustom.OffImageLocation, buf)
-			}
-			cvb, _ := sdkModels.NewCommandValue(reqs[0].DeviceResourceName, common.ValueTypeBinary, buf.Bytes())
-			res[0] = cvb
-		} else if reqs[0].DeviceResourceName == "Uint8Array" {
-			cv, _ := sdkModels.NewCommandValue(reqs[0].DeviceResourceName, common.ValueTypeUint8Array, []uint8{0, 1, 2})
-			res[0] = cv
+	if len(reqs) == 2 {
+		res = make([]*sdkModels.CommandValue, 2)
+		if reqs[0].DeviceResourceName == "Tx" {
+			tx, rx, _ := DataRate()
+			fmt.Println("tx", tx, "rx", rx)
+			fmt.Printf("The type of result1 is %T and "+
+				"the type of result2 is %T",
+				tx, rx)
+			cv0, _ := sdkModels.NewCommandValue("Tx", common.ValueTypeFloat64, tx)
+			cv1, _ := sdkModels.NewCommandValue("Rx", common.ValueTypeFloat64, rx)
+			fmt.Println("crea cv0,cv1,cv2")
+			res[0] = cv0
+			res[1] = cv1
+			fmt.Println("sale")
 		}
 	} else if len(reqs) == 3 {
 		res = make([]*sdkModels.CommandValue, 3)
-		for i, r := range reqs {
-			var cv *sdkModels.CommandValue
-			switch r.DeviceResourceName {
-			case "Xrotation":
-				cv, _ = sdkModels.NewCommandValue(r.DeviceResourceName, common.ValueTypeInt32, s.xRotation)
-			case "Yrotation":
-				cv, _ = sdkModels.NewCommandValue(r.DeviceResourceName, common.ValueTypeInt32, s.yRotation)
-			case "Zrotation":
-				cv, _ = sdkModels.NewCommandValue(r.DeviceResourceName, common.ValueTypeInt32, s.zRotation)
-			}
-			res[i] = cv
+		if reqs[0].DeviceResourceName == "RSSI" {
+			rssi, rsrp, rscp, _ := SignalQuality()
+			fmt.Println("rssi", rssi, "rsrp", rsrp, "rscp", rscp)
+			cv0, _ := sdkModels.NewCommandValue("RSSI", common.ValueTypeFloat64, rssi)
+			cv1, _ := sdkModels.NewCommandValue("RSRP", common.ValueTypeFloat64, rsrp)
+			cv2, _ := sdkModels.NewCommandValue("RSCP", common.ValueTypeFloat64, rscp)
+			res[0] = cv0
+			res[1] = cv1
+			res[2] = cv2
 		}
 	}
-
 	return
 }
 
@@ -187,41 +169,6 @@ func (s *SimpleDriver) HandleReadCommands(deviceName string, protocols map[strin
 // command.
 func (s *SimpleDriver) HandleWriteCommands(deviceName string, protocols map[string]models.ProtocolProperties, reqs []sdkModels.CommandRequest,
 	params []*sdkModels.CommandValue) error {
-	var err error
-
-	for i, r := range reqs {
-		s.lc.Debugf("SimpleDriver.HandleWriteCommands: protocols: %v, resource: %v, parameters: %v, attributes: %v", protocols, reqs[i].DeviceResourceName, params[i], reqs[i].Attributes)
-		switch r.DeviceResourceName {
-		case "SwitchButton":
-			if s.switchButton, err = params[i].BoolValue(); err != nil {
-				err := fmt.Errorf("SimpleDriver.HandleWriteCommands; the data type of parameter should be Boolean, parameter: %s", params[0].String())
-				return err
-			}
-		case "Xrotation":
-			if s.xRotation, err = params[i].Int32Value(); err != nil {
-				err := fmt.Errorf("SimpleDriver.HandleWriteCommands; the data type of parameter should be Int32, parameter: %s", params[i].String())
-				return err
-			}
-		case "Yrotation":
-			if s.yRotation, err = params[i].Int32Value(); err != nil {
-				err := fmt.Errorf("SimpleDriver.HandleWriteCommands; the data type of parameter should be Int32, parameter: %s", params[i].String())
-				return err
-			}
-		case "Zrotation":
-			if s.zRotation, err = params[i].Int32Value(); err != nil {
-				err := fmt.Errorf("SimpleDriver.HandleWriteCommands; the data type of parameter should be Int32, parameter: %s", params[i].String())
-				return err
-			}
-		case "Uint8Array":
-			v, err := params[i].Uint8ArrayValue()
-			if err == nil {
-				s.lc.Debugf("Uint8 array value from write command: ", v)
-			} else {
-				return err
-			}
-		}
-	}
-
 	return nil
 }
 

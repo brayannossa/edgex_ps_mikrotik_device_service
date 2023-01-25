@@ -1,4 +1,4 @@
-module github.com/edgexfoundry/device-simple
+module github.com/edgexfoundry/device-mikrotik
 
 go 1.16
 

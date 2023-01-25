@@ -1,0 +1,66 @@
+apiVersion: "v2"
+name: "Mikrotik-Profile"
+manufacturer: "Simple Corp."
+model: "SP-01"
+labels:
+  - "Mikrotik commandas"
+description: "Mikrotik profile"
+
+deviceResources:
+  -
+    name: "Tx"
+    isHidden: true
+    description: "transmit data rate"
+    properties:
+        valueType: "Float64"
+        readWrite: "R"
+        defaultValue: 0.0   
+  -
+    name: "Rx"
+    isHidden: true
+    description: "receive data rate"
+    properties:
+        valueType: "Float64"
+        readWrite: "R"
+        defaultValue: 0.0           
+  -
+    name: "RSSI"
+    isHidden: true
+    description: "received signal strength indicator"
+    properties:
+        valueType: "Float64"
+        readWrite: "R"
+        defaultValue: 0.0   
+  -
+    name: "RSRP"
+    isHidden: true
+    description: "reference signal received power"
+    properties:
+        valueType: "Float64"
+        readWrite: "R"
+        defaultValue: 0.0  
+  -
+    name: "RSCP"
+    isHidden: true
+    description: "received signal code power"
+    properties:
+        valueType: "Float64"
+        readWrite: "R"
+        defaultValue: 0.0
+
+deviceCommands:
+  -
+    name: "DataRate"
+    isHidden: false
+    readWrite: "R"
+    resourceOperations:
+      - { deviceResource: "Tx", defaultValue: 0.0 }
+      - { deviceResource: "Rx", defaultValue: 0.0 }
+  -
+    name: "SignalQuality"
+    isHidden: false
+    readWrite: "R"
+    resourceOperations:
+      - { deviceResource: "RSSI", defaultValue: 0.0 }
+      - { deviceResource: "RSRP", defaultValue: 0.0 }
+      - { deviceResource: "RSCP", defaultValue: 0.0 }

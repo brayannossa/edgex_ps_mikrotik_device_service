@@ -17,7 +17,7 @@
 ARG BASE=golang:1.16-alpine3.12
 FROM ${BASE} AS builder
 
-WORKDIR /device-simple
+WORKDIR /device-mikrotik
 
 LABEL license='SPDX-License-Identifier: Apache-2.0' \
   copyright='Copyright (c) 2020: Intel'
@@ -42,11 +42,11 @@ RUN sed -e 's/dl-cdn[.]alpinelinux.org/nl.alpinelinux.org/g' -i~ /etc/apk/reposi
 RUN apk add --update --no-cache zeromq
 
 WORKDIR /
-COPY --from=builder /device-simple/cmd/device-simple/Attribution.txt /Attribution.txt
-COPY --from=builder /device-simple/cmd/device-simple/device-simple /device-simple
-COPY --from=builder /device-simple/cmd/device-simple/res/ /res
+COPY --from=builder /device-mikrotik/cmd/device-mikrotik/Attribution.txt /Attribution.txt
+COPY --from=builder /device-mikrotik/cmd/device-mikrotik/device-mikrotik /device-mikrotik
+COPY --from=builder /device-mikrotik/cmd/device-mikrotik/res/ /res
 
-EXPOSE 59985
+EXPOSE 59986
 
-ENTRYPOINT ["/device-simple"]
+ENTRYPOINT ["/device-mikrotik"]
 CMD ["-cp=consul.http://edgex-core-consul:8500", "--registry", "--confdir=/res"]

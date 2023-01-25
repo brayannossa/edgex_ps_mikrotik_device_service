@@ -1,0 +1,9 @@
+[[DeviceList]]
+  Name = 'Mikrotik-Device'
+  ProfileName = 'Mikrotik-Profile'
+  Description = 'Mikrotik router'
+  Labels = [ 'Mikrotik router' ]
+  [DeviceList.Protocols]
+  [DeviceList.Protocols.other]
+    Address = 'simple01'
+    Port = '300'
