@@ -137,15 +137,10 @@ func (s *SimpleDriver) HandleReadCommands(deviceName string, protocols map[strin
 		if reqs[0].DeviceResourceName == "Tx" {
 			tx, rx, _ := DataRate()
 			fmt.Println("tx", tx, "rx", rx)
-			fmt.Printf("The type of result1 is %T and "+
-				"the type of result2 is %T",
-				tx, rx)
 			cv0, _ := sdkModels.NewCommandValue("Tx", common.ValueTypeFloat64, tx)
 			cv1, _ := sdkModels.NewCommandValue("Rx", common.ValueTypeFloat64, rx)
-			fmt.Println("crea cv0,cv1,cv2")
 			res[0] = cv0
 			res[1] = cv1
-			fmt.Println("sale")
 		}
 	} else if len(reqs) == 3 {
 		res = make([]*sdkModels.CommandValue, 3)
