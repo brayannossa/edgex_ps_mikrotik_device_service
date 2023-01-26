@@ -10,12 +10,7 @@
 package driver
 
 import (
-	"bytes"
 	"fmt"
-	"image"
-	"image/jpeg"
-	"image/png"
-	"os"
 	"reflect"
 	"time"
 
@@ -32,43 +27,8 @@ type SimpleDriver struct {
 	lc            logger.LoggingClient
 	asyncCh       chan<- *sdkModels.AsyncValues
 	deviceCh      chan<- []sdkModels.DiscoveredDevice
-	switchButton  bool
-	xRotation     int32
-	yRotation     int32
-	zRotation     int32
+	mikrotik      *Mikrotik
 	serviceConfig *config.ServiceConfig
-}
-
-func getImageBytes(imgFile string, buf *bytes.Buffer) error {
-	// Read existing image from file
-	img, err := os.Open(imgFile)
-	if err != nil {
-		return err
-	}
-	defer img.Close()
-
-	// TODO: Attach MediaType property, determine if decoding
-	//  early is required (to optimize edge processing)
-
-	// Expect "png" or "jpeg" image type
-	imageData, imageType, err := image.Decode(img)
-	if err != nil {
-		return err
-	}
-	// Finished with file. Reset file pointer
-	img.Seek(0, 0)
-	if imageType == "jpeg" {
-		err = jpeg.Encode(buf, imageData, nil)
-		if err != nil {
-			return err
-		}
-	} else if imageType == "png" {
-		err = png.Encode(buf, imageData)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 // Initialize performs protocol-specific initialization for the device
@@ -96,7 +56,7 @@ func (s *SimpleDriver) Initialize(lc logger.LoggingClient, asyncCh chan<- *sdkMo
 		"SimpleCustom/Writable", s.ProcessCustomConfigChanges); err != nil {
 		return fmt.Errorf("unable to listen for changes for 'SimpleCustom.Writable' custom configuration: %s", err.Error())
 	}
-
+	s.mikrotik = NewMikrotik()
 	return nil
 }
 
@@ -135,7 +95,7 @@ func (s *SimpleDriver) HandleReadCommands(deviceName string, protocols map[strin
 	if len(reqs) == 2 {
 		res = make([]*sdkModels.CommandValue, 2)
 		if reqs[0].DeviceResourceName == "Tx" {
-			tx, rx, _ := DataRate()
+			tx, rx, _ := s.mikrotik.DataRate()
 			fmt.Println("tx", tx, "rx", rx)
 			cv0, _ := sdkModels.NewCommandValue("Tx", common.ValueTypeFloat64, tx)
 			cv1, _ := sdkModels.NewCommandValue("Rx", common.ValueTypeFloat64, rx)
@@ -145,7 +105,7 @@ func (s *SimpleDriver) HandleReadCommands(deviceName string, protocols map[strin
 	} else if len(reqs) == 3 {
 		res = make([]*sdkModels.CommandValue, 3)
 		if reqs[0].DeviceResourceName == "RSSI" {
-			rssi, rsrp, rscp, _ := SignalQuality()
+			rssi, rsrp, rscp, _ := s.mikrotik.SignalQuality()
 			fmt.Println("rssi", rssi, "rsrp", rsrp, "rscp", rscp)
 			cv0, _ := sdkModels.NewCommandValue("RSSI", common.ValueTypeFloat64, rssi)
 			cv1, _ := sdkModels.NewCommandValue("RSRP", common.ValueTypeFloat64, rsrp)

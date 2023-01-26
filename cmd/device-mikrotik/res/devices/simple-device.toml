@@ -7,3 +7,12 @@
   [DeviceList.Protocols.other]
     Address = 'simple01'
     Port = '300'
+  [[DeviceList.AutoEvents]]
+    Interval = '10m'
+    OnChange = false
+    SourceName = 'DataRate'
+  [[DeviceList.AutoEvents]]
+    Interval = '10m'
+    OnChange = false
+    SourceName = 'SignalQuality'    
+ 
