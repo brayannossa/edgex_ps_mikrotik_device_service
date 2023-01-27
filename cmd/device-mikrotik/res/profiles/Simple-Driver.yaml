@@ -1,9 +1,9 @@
 apiVersion: "v2"
 name: "Mikrotik-Profile"
-manufacturer: "Simple Corp."
-model: "SP-01"
+manufacturer: "Generic"
+model: "Generic"
 labels:
-  - "Mikrotik commandas"
+  - "mikrotik"
 description: "Mikrotik profile"
 
 deviceResources:
@@ -14,6 +14,7 @@ deviceResources:
     properties:
         valueType: "Float64"
         readWrite: "R"
+        units: "kB/s"
         defaultValue: 0.0   
   -
     name: "Rx"
@@ -22,6 +23,7 @@ deviceResources:
     properties:
         valueType: "Float64"
         readWrite: "R"
+        units: "kB/s"
         defaultValue: 0.0           
   -
     name: "RSSI"
@@ -30,6 +32,7 @@ deviceResources:
     properties:
         valueType: "Float64"
         readWrite: "R"
+        units: "dBm"
         defaultValue: 0.0   
   -
     name: "RSRP"
@@ -38,6 +41,7 @@ deviceResources:
     properties:
         valueType: "Float64"
         readWrite: "R"
+        units: "dBm"
         defaultValue: 0.0  
   -
     name: "RSCP"
@@ -46,6 +50,7 @@ deviceResources:
     properties:
         valueType: "Float64"
         readWrite: "R"
+        units: "dBm"
         defaultValue: 0.0
 
 deviceCommands:

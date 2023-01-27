@@ -1,8 +1,6 @@
 [[DeviceList]]
-  Name = 'Mikrotik-Device'
+  Name = 'Mikrotik-Router'
   ProfileName = 'Mikrotik-Profile'
-  Description = 'Mikrotik router'
-  Labels = [ 'Mikrotik router' ]
   [DeviceList.Protocols]
   [DeviceList.Protocols.other]
     Address = 'simple01'
