@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"math"
 	"net/http"
@@ -18,7 +19,18 @@ type Mikrotik struct {
 }
 
 func NewMikrotik() *Mikrotik {
-	address, username, password := GetCredentials()
+	secretData, err := GetCredentials()
+	address := ""
+	username := ""
+	password := ""
+	if err == nil {
+		address = secretData["ip"]
+		username = secretData["username"]
+		password = secretData["password"]
+
+	} else {
+		fmt.Println("Error Crefentials", err)
+	}
 	return &Mikrotik{
 		Address:  address,
 		Username: username,

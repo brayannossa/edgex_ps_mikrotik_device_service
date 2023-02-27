@@ -12,12 +12,13 @@ LogLevel = 'INFO'
 [Service]
 HealthCheckInterval = '10s'
 Host = 'localhost'
-Port = 59999 # Device serivce are assigned the 599xx range
+Port = 59986
 ServerBindAddr = ''  # blank value defaults to Service.Host value
-StartupMsg = 'device simple started'
+StartupMsg = 'device mikrotik started'
 # MaxRequestSize limit the request body size in byte of put command
 MaxRequestSize = 0 # value 0 unlimit the request size.
-RequestTimeout = '20s'
+RequestTimeout = '5s'
+
 
 [Registry]
 Host = 'localhost'

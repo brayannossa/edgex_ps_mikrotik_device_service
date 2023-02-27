@@ -57,6 +57,7 @@ func (s *SimpleDriver) Initialize(lc logger.LoggingClient, asyncCh chan<- *sdkMo
 		return fmt.Errorf("unable to listen for changes for 'SimpleCustom.Writable' custom configuration: %s", err.Error())
 	}
 	s.mikrotik = NewMikrotik()
+	go s.UpdateCredentials()
 	return nil
 }
 
